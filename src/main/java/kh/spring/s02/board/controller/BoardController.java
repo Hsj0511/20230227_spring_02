@@ -1,6 +1,8 @@
 package kh.spring.s02.board.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
 
 import kh.spring.s02.board.model.service.BoardService;
 import kh.spring.s02.board.model.vo.BoardVo;
@@ -29,8 +35,8 @@ public class BoardController {
 	public final static int PAGE_LIMIT = 3;
 	
 	
-	@RequestMapping(value="/list", method=RequestMethod.GET)
-	public ModelAndView viewListBoard(ModelAndView mv) {
+	@RequestMapping(value="/list")
+	public ModelAndView viewListBoard(ModelAndView mv,HttpServletRequest req) {
 		//TODO
 		//검색단어는 제목, 내용, 작성자에서 포함되어있으면 찾기
 		//null 또는 ""은 검색하지 않음
@@ -39,7 +45,13 @@ public class BoardController {
 //		String searchWord = "";
 		String searchWord = "답";
 		
-		
+		try {
+			req.setCharacterEncoding("UTF-8");
+			searchWord = req.getParameter("searchWord");
+			System.out.println("한글 확인: "+ searchWord);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		
 		
 		int currentPage = 1;
@@ -94,7 +106,7 @@ public class BoardController {
 		vo.setBoardContent(boardContent);
 		vo.setBoardOriginalFilename(boardOriginalFilename);
 		vo.setBoardRenameFilename(boardRenameFilename);
-		service.update(vo);
+		int result = service.update(vo);
 	}
 	
 	
@@ -108,11 +120,22 @@ public class BoardController {
 	
 	
 	@GetMapping(value="/read")
-	public void viewReadBoard() {
-		//TODO
-		int boardNum = 1;
-		String writer = "user11";
+	public ModelAndView viewReadBoard(
+			ModelAndView mv,
+			@RequestParam("boardNum") int boardNum) {
+		
+		String writer = "user2";
+		
 		BoardVo vo = service.selectOne(boardNum, writer);
+		mv.addObject("board", vo);
+		
+		List<BoardVo> replyList =service.selectReplyList(boardNum);
+		mv.addObject("replyList", replyList);
+				
+		mv.setViewName("board/read");
+		
+		
+		return mv;
 	}
 	
 
@@ -147,11 +170,13 @@ public class BoardController {
 	}
 	
 	
+
 	
-	//답글 작성
+	
+	//답글 작성 페이지 이동
 	@GetMapping("/isertReply")
 	public ModelAndView viewInsertReply(ModelAndView mv
-		, int board //몇번 글에 답글인지
+		, int boardNum //몇번 글에 답글인지
 		) {
 		mv.setViewName("insertReply");
 		return mv;
@@ -170,10 +195,36 @@ public class BoardController {
 		vo.setBoardTitle("임시답제목");
 		vo.setBoardWriter("user22");
 		
+		//답글작성
 		service.insert(vo);
-		
 		return mv;
-		}		
+	
+
+		
+	}
+
+	
+	
+	@PostMapping("/insertReplyAjax")
+	@ResponseBody
+	public String insertReplyAjax(
+			BoardVo vo) {
+		
+//		int boardNum = 4;
+//		vo.setBoardNum(boardNum);
+//		
+//		vo.setBoardContent("임시답내용");
+//		vo.setBoardTitle("임시답제목");
+		vo.setBoardWriter("user22");
+		
+		service.insert(vo);
+		//연관 답글들 조회해서 ajax로 return
+		List<BoardVo> replyList =service.selectReplyList(vo.getBoardNum());
+		//ajax는 mv에 실어갈 수 없음		return mv;
+		return new Gson().toJson(replyList);
+		
+	
+	}
 	
 	
 	@RequestMapping("/test")

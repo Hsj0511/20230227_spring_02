@@ -18,15 +18,7 @@
 
 </resultMap>
 
-<resultMap type="bvo" id="rsMap">
-	<result column="sdate" property="boardDate"/>
-	<result column="board_num" property="boardRef"/>
-</resultMap>
 
-<select id="tempSelect" resultMap="rsMap">
-
-select sysdate as sdate, board_num from board
-</select>
 
 <insert id="insertid" parameterType ="kh.spring.s02.board.model.vo.BoardVo">
 	insert into board values(
@@ -98,7 +90,8 @@ select sysdate as sdate, board_num from board
 	delete from board where board_Num = #{boardNum}
 </delete>
 
-<select id="selectOneid" resultType="kh.spring.s02.board.model.vo.BoardVo">
+<!--  --><select id="selectOneid" resultMap="bvoMap"> -->
+ <!--<select id="selectOneid" resultType="kh.spring.s02.board.model.vo.BoardVo"> -->
 select * from board where board_Num = #{boardNum}
 </select>
 
@@ -136,6 +129,14 @@ order by board_ref desc, board_reply_seq asc
 		</if>
 		</trim>
 </select>
+<select id="selectReplyList" resultMap="bvoMap">
+	select * from board 
+		where BOARD_LEVEL > (select BOARD_LEVEL from board where board_Num=#{board_Num} )
+			and BOARD_REF = (select BOARD_REF from board where board_Num=#{board_Num} )
+			and BOARD_REPLY_SEQ > (select BOARD_REPLY_SEQ from board where board_Num=#{board_Num} )
+		order by BOARD_REPLY_SEQ asc
+</select>
+
 
 
 <select id="tempCallableSelect"

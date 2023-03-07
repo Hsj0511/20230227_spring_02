@@ -75,5 +75,9 @@ public class BoardDao {
 		}
 		return volist;
 	}
+	public List<BoardVo> selectReplyList(int boardNum) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("boardns.selectReplyList", boardNum);
+	}
 	
 }

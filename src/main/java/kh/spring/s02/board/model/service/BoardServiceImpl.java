@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+
 import kh.spring.s02.board.model.dao.BoardDao;
 import kh.spring.s02.board.model.vo.BoardVo;
 
@@ -37,7 +39,8 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardVo selectOne(int boardNum, String writer) {
 		BoardVo result = dao.selectOne(boardNum);
-		if(!result.getBoardWriter().equals(writer)) {
+		
+		if(result!=null && !result.getBoardWriter().equals(writer)) {
 			dao.updateReadCount(boardNum);
 		}return result;
 		
@@ -73,5 +76,18 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		return dao.selectList(currentPage,limit,searchWord) ;
 	}
+
+	@Override
+	public List<BoardVo> selectReplyList(int boardNum) {
+		// TODO Auto-generated method stub
+		return  dao.selectReplyList(boardNum);
+	}
+
+	@Override
+	public List<BoardVo> selectReplyList(int boardNum, int currentPage, int limit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
