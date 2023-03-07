@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="boardns">
+
+<resultMap type="bvo" id="bvoMap">
+
+	<id column="board_Num" property="boardNum"/>
+	<result column="board_Title" property="boardTitle"/>
+	<result column="board_Writer" property="boardWriter"/>
+	<result column="board_Content" property="boardContent"/>
+	<result column="board_OriginalFilename" property="boardOriginalFilename"/>
+	<result column="board_RenameFilename" property="boardRenameFilename"/>
+	<result column="board_Date" property="boardDate"/>
+	<result column="board_Level" property="boardLevel"/>
+	<result column="board_Ref" property="boardRef"/>
+	<result column="board_ReplySeq" property="boardReplySeq"/>
+	<result column="board_ReadCount" property="boardReadCount"/>
+
+</resultMap>
+
+<resultMap type="bvo" id="rsMap">
+	<result column="sdate" property="boardDate"/>
+	<result column="board_num" property="boardRef"/>
+</resultMap>
+
+<select id="tempSelect" resultMap="rsMap">
+
+select sysdate as sdate, board_num from board
+</select>
+
+<insert id="insertid" parameterType ="kh.spring.s02.board.model.vo.BoardVo">
+	insert into board values(
+
+	(select NVL(MAX(BOARD_NUM),0)+1 from board)
+	,#{boardTitle}, #{boardWriter}, #{boardContent}
+	,#{boardOriginalFilename},#{boardRenameFilename}
+	,default
+		<choose>
+		<when test="boardNum !=0">
+		
+		,(select board_level +1 from board where BOARD_NUM= #{boardNum} )
+		,(select BOARD_REF from board where BOARD_NUM = #{boardNum} )
+		,(select BOARD_REPLY_SEQ+1 from board where BOARD_NUM= #{boardNum} )
+		</when>
+		<otherwise>
+		,DEFAULT
+		,(select NVL(MAX(BOARD_NUM),0)+1 from board)
+		,DEFAULT
+		</otherwise>
+	</choose>
+	,DEFAULT
+	)
+</insert>
+
+
+<update id="updateid">
+	update board set 
+		board_Title = #{boardTitle}
+		,board_Content = #{boardContent}
+		<if test="boardOriginalFilename != null and boardOriginalFilename neq ''.toString()">
+		,board_OriginalFilename = #{boardOriginalFilename}
+		</if>
+		<if test="boardOriginalFilename == null or boardOriginalFilename eq''">
+		,board_OriginalFilename = null
+		</if>
+		<choose>
+			<when test="boardRenameFilename != null and !boardRenameFilename.equals('')">
+			,board_RenameFilename = #{boardRenameFilename}
+			</when>
+			<otherwise>
+			,board_RenameFilename = null
+			</otherwise>		
+		</choose>
+		,board_Date = SYSDATE
+		where board_Num =#{boardNum}
+	
+</update>
+<update id="updateReadCount">
+	update board set 
+		board_ReadCount = board_ReadCount+1
+	
+		where board_Num =#{boardNum}
+	
+</update>
+<update id="updateForReply">
+	update board set BOARD_REPLY_SEQ=BOARD_REPLY_SEQ+1
+	WHERE
+	board_reply_seq > (select board_reply_seq from board where board_num = #{boardNum})
+	and BOARD_REF = (select BOARD_REF from board where board_num = #{boardNum})
+		
+	
+</update>
+
+
+
+
+<delete id="deleteid" >
+	delete from board where board_Num = #{boardNum}
+</delete>
+
+<select id="selectOneid" resultType="kh.spring.s02.board.model.vo.BoardVo">
+select * from board where board_Num = #{boardNum}
+</select>
+
+<!-- <select id="selectListid" resultType="bvo"> -->
+<select id="selectListid" resultMap="bvoMap">
+select BOARD_NUM, BOARD_TITLE
+,BOARD_WRITER
+,BOARD_CONTENT
+,BOARD_ORIGINAL_FILENAME
+,BOARD_RENAME_FILENAME
+,BOARD_DATE
+,BOARD_LEVEL
+,BOARD_REF
+,BOARD_REPLY_SEQ
+,BOARD_READCOUNT
+from board
+		<trim prefix="where" prefixOverrides="AND|OR">
+		<if test="searchWord !=null and searchWord neq ''">
+			BOARD_TITLE like '%'|| #{searchWord} ||'%'
+			or BOARD_CONTENT like '%'|| #{searchWord}||'%'
+			or BOARD_WRITER like '%'|| #{searchWord}||'%'
+		</if>
+		</trim>
+order by board_ref desc, board_reply_seq asc
+</select>
+
+
+<select id ="selectOneCount" resultType="_int">
+	select count(*) cnt from board
+		<trim prefix="where" prefixOverrides="AND|OR">
+		<if test="searchWord !=null and searchWord neq ''">
+			BOARD_TITLE like '%'|| #{searchWord} ||'%'
+			or BOARD_CONTENT like '%'|| #{searchWord}||'%'
+			or BOARD_WRITER like '%'|| #{searchWord}||'%'
+		</if>
+		</trim>
+</select>
+
+
+<select id="tempCallableSelect"
+	statementType="CALLABLE"
+	parameterType="bvo" resultType="bvo">
+	{
+	CALL p1
+	}
+</select>
+
+<select id="tempTrimSelect">
+	select * from board
+		<trim prefix="where" prefixOverrides="AND|OR">
+			
+		<if test="searchWord !=null and searchWord neq ''">
+			title like #{searchWord} 
+			or content like #{searchWord}
+		</if>
+		</trim>
+</select>
+
+<delete id="tempForeachDelete">
+	delete from board
+	<where>
+	<![CDATA[
+		1 <> 1 or
+	]]>
+		<foreach collection="list" item="bnum" open="board_num in (" close=")" separator=",">
+		#{bnum}
+		</foreach>
+	</where>
+</delete>
+
+
+
+</mapper>

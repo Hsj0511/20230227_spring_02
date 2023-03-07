@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+<!-- 	<setting name="mapUnderscoreToCamelCase" value="true"/> -->	
+	</settings>
+	
+<typeAliases>
+	<typeAlias type="kh.spring.s02.board.model.vo.BoardVo" alias="bvo"/>
+	<typeAlias type="kh.spring.s02.member.vo.MemberVo" alias="mvo"/>
+</typeAliases>
+
+
+	<mappers>
+		<mapper resource="mappers/board-mapper.xml"/>
+		<mapper resource="mappers/member-mapper.xml"/>
+	</mappers>
+
+
+
+<!--
+	<environments default="development">
+		<environment id="development">
+			<dataSource type="POOLED">
+			<property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+			<property name="url" value="jdbc:oracle.thin:@127.0.0.1:1521:xe"></property>
+			<property name="username" value="KH"/>
+			<property name="password" value="KH"/>
+			</dataSource>
+		</environment>
+	</environments>
+  -->	
+</configuration>
