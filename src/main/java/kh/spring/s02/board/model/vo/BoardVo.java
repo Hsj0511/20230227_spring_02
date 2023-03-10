@@ -5,7 +5,16 @@ import java.sql.Date;
 
 import org.springframework.stereotype.Component;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @Component
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
 public class BoardVo implements Serializable {
 	private int boardNum;
 	private String boardTitle;
