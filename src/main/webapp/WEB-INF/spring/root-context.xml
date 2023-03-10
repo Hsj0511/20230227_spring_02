@@ -54,4 +54,7 @@
 			</tx:attributes>
 		</tx:advice>
  -->
+ 		<tx:annotation-driven/>
+ 		
+ 	
 </beans>
