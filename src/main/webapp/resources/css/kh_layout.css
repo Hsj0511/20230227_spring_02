@@ -1,0 +1,71 @@
+@charset "UTF-8";
+
+*{
+	box-sizing: border-box;
+}
+.wrap.header {
+	background-color: beige;
+}
+
+.wrap.footer {
+	position: relative;
+	background-color: beige;
+}
+.wrap.footer > .btn.top {
+	position: absolute;
+	left:10px;
+	top:10px;
+}
+
+header {
+	width :960px; margin: 0 auto;
+	border: 1px solid black;
+	/* 5. 테두리 - content-box --> border-box 지정 */
+    border: 1px solid black;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    position: relative;
+        /* 자식 absolute 있으면 height 지정  */
+    height: 200px;
+}
+
+section {
+	width :960px; margin: 0 auto;
+		border: 1px solid black;
+		/* 5. 테두리 - content-box --> border-box 지정 */
+    border: 1px solid black;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+
+}
+
+aside{
+	width :960px; margin: 0 auto;
+		border: 1px solid black;
+}
+
+/* wrap-section {
+	
+}
+wrap-section > menu {
+	
+}
+wrap-section > section {
+	
+}
+wrap-sectopm > aside {
+	
+}*/
+
+footer {
+	width :960px; margin: 0 auto;
+		border: 1px solid black;
+		/* 5. 테두리 - content-box --> border-box 지정 */
+    border: 1px solid black;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+
+} 

@@ -1,0 +1,18 @@
+@charset "UTF-8";
+.logo {
+	position: absolute;
+	left:20px;
+	top:10px;
+}
+.main_gnb{
+	position: absolute;
+	right:20px;
+	top:10px;
+	width:200px;
+}
+.main_lnb {
+	position: absolute;
+	right:20px;
+	bottom:10px;
+	width:300px;
+}
