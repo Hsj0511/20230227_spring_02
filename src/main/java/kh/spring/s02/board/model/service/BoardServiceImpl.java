@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import kh.spring.s02.board.model.dao.BoardDao;
 import kh.spring.s02.board.model.vo.BoardVo;
 
+
 @Service
 public class BoardServiceImpl implements BoardService {
 

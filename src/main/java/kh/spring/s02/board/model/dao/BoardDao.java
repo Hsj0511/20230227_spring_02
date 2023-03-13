@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import kh.spring.s02.board.controller.BoardController;
 import kh.spring.s02.board.model.vo.BoardVo;
+
 @Repository
 public class BoardDao {
 
