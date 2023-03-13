@@ -19,7 +19,7 @@ public class FileUtil {
 	private final static String UPLOAD_FOLDER = "\\resources\\uploadfiles";
 
 	
-	public List<Map<String, String>> saveFileList(MultipartHttpServletRequest multiReq,HttpServletRequest request, String addedPath ) {
+	public List<Map<String, String>> saveFileList(MultipartHttpServletRequest multiReq,HttpServletRequest request, String addedPath ) throws Exception {
 		List<Map<String,String>> result =new ArrayList<Map<String,String>>();
 		
 		Iterator<String> iterator = multiReq.getFileNames();  //Name input name = "n1"
